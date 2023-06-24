@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Post, Res } from "@nestjs/common";
+import { Body, Controller, Get, HttpStatus, NotFoundException, Post, Res } from "@nestjs/common";
 import { Response } from "express";
 
 import * as bcrypt from "bcrypt";
@@ -7,6 +7,7 @@ import { AuthDTO } from "./dtos/auth-dto";
 import { UserService } from "../user/user.service";
 import { AuthService } from "./auth.service";
 import { Public } from "./auth.guard";
+import { ReauthenticateBody } from "./dtos/reauthenticate-body";
 
 @Controller("auth")
 export class AuthController {
@@ -36,18 +37,19 @@ export class AuthController {
   @Post("login")
   async login(@Res() res: Response, @Body() {email, password}: AuthDTO) {
     const user = await this.userService.findByEmail(email);
-    if(!user) return res.status(HttpStatus.NOT_FOUND).send("Usuário não encontrado.");
+    if(!user) {
+      throw new NotFoundException("Usuário não encontrado");
+    };
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if(!isPasswordValid) return res.status(HttpStatus.BAD_REQUEST).send("Erro ao efetuar login.");
 
-    const tokens = await this.authService.login(user.id, user.email);
+    const tokens = await this.authService.generateToken(user.id, user.email);
     return res.status(HttpStatus.OK).json(tokens);
   }
 
-  @Public()
-  @Post("profile")
-  async userProfile(@Res() res: Response) {
-    return res.status(HttpStatus.OK).json("Gabriel Droyen");
+  @Post("refresh")
+  async reauthenticate(@Body() body: ReauthenticateBody) {
+    return this.authService.reauthenticate(body);
   }
 }
