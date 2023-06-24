@@ -3,11 +3,11 @@ import { Response } from "express";
 
 import * as bcrypt from "bcrypt";
 
-import { AuthDTO } from "./dtos/auth-dto";
+import { UserAuthDto } from "./dtos/user-auth-dto";
 import { UserService } from "../user/user.service";
 import { AuthService } from "./auth.service";
 import { Public } from "./auth.guard";
-import { ReauthenticateBody } from "./dtos/reauthenticate-body";
+import { ReauthenticateUserDto } from "./dtos/reauthenticate-user-dto";
 
 @Controller("auth")
 export class AuthController {
@@ -18,7 +18,7 @@ export class AuthController {
 
   @Public()
   @Post("register")
-  async register(@Res() res: Response, @Body() {email, password}: AuthDTO) {
+  async register(@Res() res: Response, @Body() {email, password}: UserAuthDto) {
     const saltRounds = await bcrypt.genSalt(12);
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     
@@ -35,7 +35,7 @@ export class AuthController {
 
   @Public()
   @Post("login")
-  async login(@Res() res: Response, @Body() {email, password}: AuthDTO) {
+  async login(@Res() res: Response, @Body() {email, password}: UserAuthDto) {
     const user = await this.userService.findByEmail(email);
     if(!user) {
       throw new NotFoundException("Usuário não encontrado");
@@ -49,7 +49,7 @@ export class AuthController {
   }
 
   @Post("refresh")
-  async reauthenticate(@Body() body: ReauthenticateBody) {
+  async reauthenticate(@Body() body: ReauthenticateUserDto) {
     return this.authService.reauthenticate(body);
   }
 }

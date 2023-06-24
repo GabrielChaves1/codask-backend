@@ -8,9 +8,22 @@ generator client {
 }
 
 model User {
-  id            String        @id @default(uuid())
-  email         String        @unique
-  password      String
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  posts     Post[]
+  createdAt DateTime @default(now())
 
   @@map("users")
+}
+
+model Post {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String   @unique
+  createdAt DateTime @default(now())
+
+  @@map("posts")
 }

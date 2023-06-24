@@ -1,8 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { UserRepository } from "../user-repository";
 import { Injectable } from "@nestjs/common";
-import { User } from "../../entities/user";
 import { PrismaService } from "src/config/prisma.service";
+import { User } from "@prisma/client";
 
 @Injectable()
 export class PrismaUserRepository implements UserRepository {

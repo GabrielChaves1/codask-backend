@@ -3,9 +3,9 @@ import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "../user/user.service";
 
-import { ReauthenticateBody } from "./dtos/reauthenticate-body";
+import { ReauthenticateUserDto } from "./dtos/reauthenticate-user-dto";
 
-import { User } from "../user/entities/user";
+import { User } from "@prisma/client";
 
 @Injectable()
 export class AuthService {
@@ -20,12 +20,12 @@ export class AuthService {
 
     const access_token = await this.jwtService.signAsync(payload, {
       secret: this.configService.get<string>("JWT_SECRET_KEY"),
-      expiresIn: '30s'
+      expiresIn: '20m'
     })
 
     const refresh_token = await this.jwtService.signAsync(payload, {
       secret: this.configService.get<string>("JWT_REFRESH_SECRET_KEY"),
-      expiresIn: '60s'
+      expiresIn: '30d'
     })
 
     return {
@@ -34,7 +34,7 @@ export class AuthService {
     };
   }
 
-  async reauthenticate({ refreshToken }: ReauthenticateBody) {
+  async reauthenticate({ refreshToken }: ReauthenticateUserDto) {
     const user: User = await this.verifyRefreshToken(refreshToken);
     return this.generateToken(user.id, user.email);
   }

@@ -5,7 +5,6 @@ import { UserModule } from "src/modules/user/user.module";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { AuthService } from "./auth.service";
-import { SetMetadata } from '@nestjs/common';
 import { APP_GUARD } from "@nestjs/core";
 import { AuthGuard } from "./auth.guard";
 

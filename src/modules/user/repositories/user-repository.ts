@@ -1,4 +1,4 @@
-import { User } from "../entities/user";
+import { User } from "@prisma/client";
 
 export abstract class UserRepository {
   abstract create(email: string, password: string): Promise<User>;

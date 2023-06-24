@@ -13,6 +13,15 @@ import { Request } from 'express';
 export const IS_PUBLIC_KEY = 'isPublic';
 export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
 
+declare module 'express-serve-static-core' {
+  export interface Request {
+    user: {
+      id: string,
+      email: string
+    }
+  }
+}
+
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
