@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { UUID } from 'node:crypto';
 
 export const IS_PUBLIC_KEY = 'isPublic';
 export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
@@ -16,7 +17,8 @@ export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
 declare module 'express-serve-static-core' {
   export interface Request {
     user: {
-      id: string,
+      id: UUID,
+      username: string,
       email: string
     }
   }
