@@ -10,6 +10,7 @@ generator client {
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
+  username  String   @unique
   password  String
   posts     Post[]
   createdAt DateTime @default(now())
@@ -18,12 +19,24 @@ model User {
 }
 
 model Post {
-  id        String   @id @default(uuid())
+  id        String        @id @default(uuid())
   title     String
+  slug      String
   content   String
-  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  authorId  String   @unique
-  createdAt DateTime @default(now())
+  author    User          @relation(fields: [authorId], references: [id])
+  authorId  String
+  createdAt DateTime      @default(now())
+  comments  PostComment[]
 
   @@map("posts")
+}
+
+model PostComment {
+  id        String   @id @default(uuid())
+  content   String
+  post      Post     @relation(fields: [parentId], references: [id])
+  parentId  String
+  createdAt DateTime @default(now())
+
+  @@map("posts_comments")
 }
