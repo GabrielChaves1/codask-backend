@@ -8,8 +8,12 @@ export class UserService {
     private readonly userRepository: UserRepository
   ) {}
 
-  async create(email: string, password: string): Promise<User> {
-    return await this.userRepository.create(email, password);
+  async create(username: string, email: string, password: string): Promise<User> {
+    return await this.userRepository.create(username, email, password);
+  }
+
+  async findByUsername(username: string): Promise<User> {
+    return await this.userRepository.findByUsername(username);
   }
 
   async findByEmail(email: string): Promise<User> {

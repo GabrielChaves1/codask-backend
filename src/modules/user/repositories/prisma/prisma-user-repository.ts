@@ -10,10 +10,11 @@ export class PrismaUserRepository implements UserRepository {
     private readonly prismaService: PrismaService
   ) {}
 
-  async create(email: string, password: string): Promise<User> {
+  async create(username: string, email: string, password: string): Promise<User> {
     return await this.prismaService.user.create({
       data: {
         id: randomUUID(),
+        username,
         email,
         password
       }
@@ -30,10 +31,20 @@ export class PrismaUserRepository implements UserRepository {
     return user;
   }
 
+  async findByUsername(username: string): Promise<User> {
+    const user = await this.prismaService.user.findFirst({
+      where: {
+        username: 'droyendev'
+      }
+    })
+
+    return user;
+  }
+
   async findByEmail(email: string): Promise<User> {
     const user = await this.prismaService.user.findFirst({
       where: {
-        email: email
+        email
       }
     })
 
